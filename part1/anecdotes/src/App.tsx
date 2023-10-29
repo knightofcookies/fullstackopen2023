@@ -26,11 +26,11 @@ type VoteProps = {
   handleClick: () => void;
 };
 
-const Vote = (props : VoteProps) => {
+const Vote = (props: VoteProps) => {
   return (
     <div>
-    <p>has {props.votes} votes</p>
-    <Button text='Vote' handleClick={props.handleClick} />
+      <p>has {props.votes} votes</p>
+      <Button text='Vote' handleClick={props.handleClick} />
     </div>
   );
 };
@@ -55,6 +55,18 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
 
+  const findMostVoted = () => {
+    let maxi = 0;
+    for(let i = 0; i < votes.length; i++) {
+      if(votes[i] > votes[maxi]) {
+        maxi = i;
+      }
+    }
+    return maxi;
+  };
+
+  const mostVoted = findMostVoted();
+
   const nextQuote = () => {
     if (selected == anecdotes.length - 1) {
       setSelected(0);
@@ -64,17 +76,21 @@ const App = () => {
     }
   };
 
-  const vote = () => {
+  const vote = (index: number) => {
     const newVotes = [...votes];
-    newVotes[selected] += 1;
+    newVotes[index] += 1;
     setVotes(newVotes);
   };
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <Quote text={anecdotes[selected]} />
-      <Vote votes={votes[selected]} handleClick={vote} />
+      <Vote votes={votes[selected]} handleClick={() => vote(selected)} />
       <Button text='Next Quote' handleClick={nextQuote} />
+      <h1>Anecdote with most votes</h1>
+      <Quote text={anecdotes[mostVoted]} />
+      <Vote votes={votes[mostVoted]} handleClick={() => vote(mostVoted)} />
     </div>
   );
 };
