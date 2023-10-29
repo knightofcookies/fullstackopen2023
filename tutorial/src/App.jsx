@@ -1,18 +1,19 @@
-const Hello = (props) => {
-  return (
-    <div>
-      <p>Hello {props.name}, you are {props.age} years old</p>
-    </div>
-  )
-}
+import { useState } from "react";
 
 const App = () => {
+  const [counter, setCounter] = useState(0);
+
+  setTimeout(
+    () => setCounter(counter + 1),
+    1000
+  );
+
+
+  console.log('rendering...', counter);
+
   return (
-    <div>
-      <h1>Greetings</h1>
-      <Hello name='John Doe' age='19'/>
-    </div>
-  )
-}
+    <div>{counter}</div>
+  );
+};
 
 export default App;
