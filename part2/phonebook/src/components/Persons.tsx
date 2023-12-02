@@ -6,13 +6,13 @@ type PersonObject = {
 
 type PersonsProps = {
     searchResults: PersonObject[];
-    deletePerson: (id: number) => void; 
+    deletePerson: (id: number, name: string) => void; 
 };
 
 const Persons = (props: PersonsProps) => {
     return (
         <div>
-            {props.searchResults.map((person) => <div><p key={person.id}>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => props.deletePerson(person.id)}>Delete</button></div>)}
+            {props.searchResults.map((person) => <div><p key={person.id}>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => props.deletePerson(person.id, person.name)}>Delete</button></div>)}
         </div>
     );
 };
