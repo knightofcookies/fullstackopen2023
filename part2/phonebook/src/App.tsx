@@ -1,12 +1,12 @@
 import { ChangeEvent, useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
-import Persons from './components/Persons';
+import Persons, { PersonObject } from './components/Persons';
 import personService from './services/person';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '9876543210', id: 1}
+    { name: 'John Doe', phone: '007', id: 1}
   ]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
@@ -48,12 +48,27 @@ const App = () => {
       name: newName,
       phone: newNumber,
     };
+    const existingPerson = persons.find((person) => person.name === newName);
     if(newName === '' || newNumber === '') {
       alert("Field(s) cannot be empty");
       return;
     }
-    else if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already in the phonebook!`);
+    else if (existingPerson != undefined) {
+      if(confirm(`${newName} is already in the phonebook, replace the old number with the new one?`)) {
+        const id = existingPerson.id;
+        const updatedPerson: PersonObject = {...existingPerson, phone: newNumber};
+        personService
+          .updatePerson(id, updatedPerson)
+          .then(response => {
+            const responsePerson: PersonObject = response.data;
+            setPersons(persons.map(person => (person.id !== responsePerson.id) ? person : responsePerson));
+            setSearchResults(persons.map(person => (person.id !== responsePerson.id) ? person : responsePerson));
+            setNewName('');
+            setNewNumber('');
+            setNameQuery('');    
+          })
+          .catch(error => alert(error));
+      }
       return;
     }
     else {
@@ -77,8 +92,12 @@ const App = () => {
     if(!confirm(`Delete ${name}?`))
       return;
     personService.deletePerson(id).then(response => {
+      console.log(response.status);
       setPersons(persons.filter(person => person.id !== id));
       setSearchResults(persons.filter(person => person.id !== id));
+      setNameQuery('');
+      setNewName('');
+      setNewNumber('');
     }).catch(error => { 
       alert(error);
     });

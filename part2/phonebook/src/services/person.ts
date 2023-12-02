@@ -1,4 +1,5 @@
 import axios from "axios";
+import { PersonObject } from "../components/Persons";
 
 type newPersonObject = {
     name: string;
@@ -19,4 +20,8 @@ const deletePerson = (id: number) => {
     return axios.delete(`${baseUrl}/${id}`);
 };
 
-export default { getAllPersons, createPerson, deletePerson };
+const updatePerson = (id: number, updatedPerson: PersonObject) => {
+    return axios.put(`${baseUrl}/${id}`, updatedPerson);
+};
+
+export default { getAllPersons, createPerson, deletePerson, updatePerson };

@@ -12,7 +12,7 @@ type PersonsProps = {
 const Persons = (props: PersonsProps) => {
     return (
         <div>
-            {props.searchResults.map((person) => <div><p key={person.id}>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => props.deletePerson(person.id, person.name)}>Delete</button></div>)}
+            {props.searchResults.map((person) => <div key={person.id}><p>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => props.deletePerson(person.id, person.name)}>Delete</button></div>)}
         </div>
     );
 };
