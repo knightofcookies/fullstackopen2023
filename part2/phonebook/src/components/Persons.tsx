@@ -1,6 +1,6 @@
 type PersonObject = {
     name: string;
-    phone: number;
+    phone: string;
 };
 
 type PersonsProps = {
