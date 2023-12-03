@@ -6,7 +6,8 @@ type newPersonObject = {
     phone: string;
 };
 
-const baseUrl = "http://localhost:3001/persons";
+// const baseUrl = "http://localhost:3001/persons"; // works with JSON Server
+const baseUrl = "http://localhost:3001/api/persons"; // works with Part 3 Express server
 
 const getAllPersons = () => {
     return axios.get(baseUrl);
