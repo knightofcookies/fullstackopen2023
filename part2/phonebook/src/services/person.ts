@@ -7,8 +7,8 @@ type newPersonObject = {
 };
 
 // const baseUrl = "http://localhost:3001/persons"; // works with JSON Server
-const baseUrl = "http://localhost:3001/api/persons"; // works with Part 3 Express server
-// const baseUrl = "/api/notes"; // relative url when serving prod build as static content
+// const baseUrl = "http://localhost:3001/api/persons"; // works with Part 3 Express server
+const baseUrl = "/api/persons"; // relative url when serving prod build as static content
 
 const getAllPersons = () => {
     return axios.get(baseUrl);
