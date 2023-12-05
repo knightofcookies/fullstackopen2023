@@ -24,7 +24,7 @@ const App = () => {
         setSearchResults(persons);
       })
       .catch(error => {
-        setErrorMessage(error);
+        setErrorMessage(error.response.data.error);
         setTimeout(() => {
           setErrorMessage('');
         }, 5000);
@@ -83,8 +83,8 @@ const App = () => {
             }, 5000);
           })
           .catch(error => {
-            console.log(error);
-            setErrorMessage('Sorry, we couldn\'t complete your request. Refreshing this page might help.');
+            console.error(error.response.data.error);
+            setErrorMessage(error.response.data.error);
             setTimeout(() => {
               setErrorMessage('');
             }, 5000);
@@ -107,8 +107,8 @@ const App = () => {
           }, 5000);
         })
         .catch(error => {
-          console.log(error);
-          setErrorMessage('Sorry, we couldn\'t complete your request. Refreshing this page might help.');
+          console.error(error.response.data.error);
+          setErrorMessage(error.response.data.error);
           setTimeout(() => {
             setErrorMessage('');
           }, 5000);
@@ -132,8 +132,8 @@ const App = () => {
       }, 5000);
     })
       .catch(error => {
-        console.log(error);
-        setErrorMessage('Sorry, we couldn\'t complete your request. Refreshing this page might help.');
+        console.error(error.response.data.error);
+        setErrorMessage(error.response.data.error);
         setTimeout(() => {
           setErrorMessage('');
         }, 5000);

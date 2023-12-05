@@ -12,8 +12,22 @@ mongoose
     .catch(error => console.log('error connecting to MongoDB:', error.message));
 
 const entrySchema = new mongoose.Schema({
-    name: String,
-    phone: String,
+    name: {
+        type: String,
+        minLength: 3,
+        required: [true, 'Contact name required'],
+    },
+    phone: {
+        type: String,
+        minLength: 8,
+        required: [true, 'Phone number required'],
+        validate: {
+            validator: (v) => {
+                return /^\d{2}-\d+$/.test(v) || /^\d{3}-\d+$/.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number!`,
+        },
+    },
 });
 
 entrySchema.set('toJSON', {
