@@ -10,9 +10,18 @@ type PersonsProps = {
 };
 
 const Persons = (props: PersonsProps) => {
+    if(!Array.isArray(props.searchResults)) {
+        return (
+            <div>
+                <h3>Error</h3>
+                <p>There are no entries in the phonebook.</p>
+            </div>
+        );
+    }
+
     return (
         <div>
-            {props.searchResults.map((person) => <div key={person.id}><p>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => props.deletePerson(person.id, person.name)}>Delete</button></div>)}
+            {props.searchResults.map((person) => <div key={person.id}><p>{person.name} {person.phone}</p><button onClick={(event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault(); props.deletePerson(person.id, person.name);}}>Delete</button></div>)}
         </div>
     );
 };

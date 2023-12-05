@@ -11,6 +11,7 @@ morgan.token('body', (req, res) => {
 app.use(cors());
 app.use(express.json());
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body'));
+app.use(express.static('dist'));
 
 
 let persons = [
@@ -96,7 +97,7 @@ app.get('/api/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${Date().toString()}</p>`);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
