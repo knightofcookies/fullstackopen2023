@@ -88,6 +88,64 @@ test('returns 400 if author is missing', async () => {
     .expect(400)
 })
 
+test('deletes a blog', async () => {
+  const newBlog = {
+    title: 'No',
+    author: 'Nay nayest'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  const id = response.body.id
+
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+  const titles = blogsAtEnd.map(b => b.title)
+  expect(titles).not.toContain(
+    'No'
+  )
+}, 10000)
+
+test('updates a blog', async () => {
+  const newBlog = {
+    title: 'Yes',
+    author: 'Yes yesser'
+  }
+
+  const newerBlog = {
+    title: 'Yes',
+    author: 'Yesh'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  const id = response.body.id
+
+  const updateResponse = await api
+    .put(`/api/blogs/${id}`)
+    .send(newerBlog)
+    .expect(200)
+
+  expect(updateResponse.body.id).toBe(id)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+  const authors = blogsAtEnd.map(b => b.author)
+  expect(authors).toContain(
+    'Yesh'
+  )
+}, 10000)
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
