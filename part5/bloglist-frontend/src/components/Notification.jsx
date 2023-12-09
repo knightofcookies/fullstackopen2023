@@ -1,13 +1,13 @@
 const Notification = (props) => {
   if (props.message === '') {
-      return null;
+    return null
   }
 
   return (
-      <div className={props.notificationStyle}>
-          {props.message}
-      </div>
-  );
-};
+    <div className={props.notificationStyle}>
+      {props.message}
+    </div>
+  )
+}
 
-export default Notification;
+export default Notification
