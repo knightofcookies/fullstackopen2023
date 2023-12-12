@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blogs from './components/Blogs'
 import Login from './components/Login'
 import blogService from './services/blogs'
@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import loginService from './services/login'
 import LoginStatus from './components/LoginStatus'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -17,6 +18,8 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -70,6 +73,8 @@ const App = () => {
   const addBlog = async (event) => {
     event.preventDefault()
 
+    blogFormRef.current.toggleVisibility()
+
     const blogObject = {
       title: blogTitle,
       author: blogAuthor,
@@ -103,12 +108,18 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
-      blogService.getAll().then(blogs =>
-        setBlogs(blogs)
-      )
     }
   }, [])
+
+  useEffect(() => {
+    if (!user) {
+      return
+    }
+    blogService.setToken(user.token)
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )
+  }, [user])
 
   return (
     <div>
@@ -124,11 +135,16 @@ const App = () => {
         handleLogin={handleLogin}
       />
       <LoginStatus user={user} handleLogout={handleLogout} />
-      <BlogForm
-        blogTitle={blogTitle} setBlogTitle={setBlogTitle}
-        blogAuthor={blogAuthor} setBlogAuthor={setBlogAuthor}
-        blogUrl={blogUrl} setBlogUrl={setBlogUrl}
-        addBlog={addBlog} user={user} />
+      <br />
+      <Togglable buttonLabel='New Blog' ref={blogFormRef} user={user}>
+        <BlogForm
+          blogTitle={blogTitle} setBlogTitle={setBlogTitle}
+          blogAuthor={blogAuthor} setBlogAuthor={setBlogAuthor}
+          blogUrl={blogUrl} setBlogUrl={setBlogUrl}
+          addBlog={addBlog} user={user} />
+          <br />
+      </Togglable>
+      <br />
       <Blogs user={user} blogs={blogs} />
     </div>
   )

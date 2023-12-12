@@ -7,8 +7,7 @@ const BlogForm = props => {
       <h2>Add a new blog</h2>
       <form onSubmit={props.addBlog}>
         <div>
-          title
-          <input
+          Title  <input
             type="text"
             value={props.blogTitle}
             name="Title"
@@ -16,8 +15,7 @@ const BlogForm = props => {
           />
         </div>
         <div>
-          author
-          <input
+          Author  <input
             type="text"
             value={props.blogAuthor}
             name="Author"
@@ -25,8 +23,7 @@ const BlogForm = props => {
           />
         </div>
         <div>
-          url
-          <input
+          URL  <input
             type="text"
             value={props.blogUrl}
             name="Url"
