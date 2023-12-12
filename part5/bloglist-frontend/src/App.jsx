@@ -21,6 +21,11 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const sortByLikes = (a, b) => b.likes - a.likes
+  if (blogs) {
+    blogs.sort(sortByLikes)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -103,6 +108,38 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1
+    }
+    try {
+      blogService.setToken(user.token)
+      await blogService.updateBlog(updatedBlog)
+      setBlogs(blogs.map(b => (b.id === blog.id ? updatedBlog : b)))
+    } catch (exception) {
+      setErrorMessage(`Error processing your like on ${blog.title}`)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
+    }
+  }
+
+  const handleDelete = async (blog) => {
+    try {
+      if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+        blogService.setToken(user.token)
+        await blogService.deleteBlog(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+      }
+    } catch (exception) {
+      setErrorMessage(`Error deleting ${blog.title}`)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
+    }
+  }
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogListUser')
     if (loggedUserJSON) {
@@ -116,9 +153,17 @@ const App = () => {
       return
     }
     blogService.setToken(user.token)
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    try {
+      blogService.getAll().then(blogs =>
+        setBlogs(blogs)
+      )
+    } catch (exception) {
+      console.error(exception)
+      setErrorMessage('Error : Check console for details')
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
+    }
   }, [user])
 
   return (
@@ -142,10 +187,10 @@ const App = () => {
           blogAuthor={blogAuthor} setBlogAuthor={setBlogAuthor}
           blogUrl={blogUrl} setBlogUrl={setBlogUrl}
           addBlog={addBlog} user={user} />
-          <br />
+        <br />
       </Togglable>
       <br />
-      <Blogs user={user} blogs={blogs} />
+      <Blogs user={user} blogs={blogs} handleLike={handleLike} handleDelete={handleDelete} />
     </div>
   )
 }

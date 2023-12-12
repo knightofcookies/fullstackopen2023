@@ -15,7 +15,7 @@ const getAll = async () => {
     const response = await axios.get(baseUrl, config)
     return response.data
   } catch (exception) {
-    console.error(exception)
+    console.error(exception.response.data)
     return null
   }
 }
@@ -29,9 +29,35 @@ const createBlog = async (blogObject) => {
     const response = await axios.post(baseUrl, blogObject, config)
     return response.data
   } catch (exception) {
-    console.error(exception)
+    console.error(exception.response.data)
     return null
   }
 }
 
-export default { getAll, setToken, createBlog }
+const updateBlog = async (blog) => {
+  const id = blog.id
+  const config = {
+    headers: { Authorization: token }
+  }
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, blog, config)
+    return response.data
+  } catch (exception) {
+    console.error(exception.response.data)
+    return null
+  }
+}
+
+const deleteBlog = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  try {
+    await axios.delete(`${baseUrl}/${id}`, config)
+  } catch (exception) {
+    console.error(exception.response.data)
+    throw new Error(exception.response.data)
+  }
+}
+
+export default { getAll, setToken, createBlog, updateBlog, deleteBlog }
