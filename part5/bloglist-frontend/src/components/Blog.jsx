@@ -12,13 +12,13 @@ const Blog = ({ blog, handleLike, user, handleDelete }) => {
   }
   if (!detailedView) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className='blogDiv'>
         {blog.title} — {blog.author} <button onClick={() => setDetailedView(!detailedView)}>View</button>
       </div>
     )
   } else {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className='blogDiv'>
         <p>{blog.title} <button onClick={() => setDetailedView(!detailedView)}>Hide</button></p>
         <p>{blog.url}</p>
         <p>{blog.likes} <button onClick={() => handleLike(blog)}>Like</button></p>
