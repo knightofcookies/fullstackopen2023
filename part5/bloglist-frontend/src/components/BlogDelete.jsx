@@ -3,7 +3,7 @@ const BlogDelete = ({ user, handleDelete, blog }) => {
     return null
   }
   return (
-    <button onClick={() => handleDelete(blog)}>Delete</button>
+    <button className='blogDeleteButton' onClick={() => handleDelete(blog)}>Delete</button>
   )
 }
 

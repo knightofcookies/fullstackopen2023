@@ -166,7 +166,7 @@ const App = () => {
       />
       <LoginStatus user={user} handleLogout={handleLogout} />
       <br />
-      <Togglable buttonLabel='New Blog' ref={blogFormRef} user={user}>
+      <Togglable buttonLabel='New Blog' buttonId='newBlogButton' ref={blogFormRef} user={user}>
         <BlogForm addBlog={addBlog} user={user} />
         <br />
       </Togglable>

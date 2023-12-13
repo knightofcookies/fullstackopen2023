@@ -15,8 +15,12 @@ const getAll = async () => {
     const response = await axios.get(baseUrl, config)
     return response.data
   } catch (exception) {
-    console.error(exception.response.data)
-    return null
+    if(exception.response) {
+      console.error(exception.response.data)
+    } else {
+      console.error(exception)
+    }
+      return null
   }
 }
 

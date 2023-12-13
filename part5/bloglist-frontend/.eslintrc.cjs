@@ -2,7 +2,8 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    jest: true
+    'jest/globals': true,
+    'cypress/globals': true
   },
   extends: [
     'standard',
@@ -27,7 +28,9 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: [
-    'react'
+    'react',
+    'jest',
+    'cypress'
   ],
   rules: {
     'react/prop-types': 'off'

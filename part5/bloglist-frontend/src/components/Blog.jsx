@@ -21,7 +21,7 @@ const Blog = ({ blog, handleLike, user, handleDelete }) => {
       <div style={blogStyle} className='blogDiv'>
         <p>{blog.title} <button onClick={() => setDetailedView(!detailedView)}>Hide</button></p>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button onClick={() => handleLike(blog)}>Like</button></p>
+        <p>{blog.likes} <button className='blogLikeButton' onClick={() => handleLike(blog)}>Like</button></p>
         <p>{blog.author}</p>
         <BlogDelete user={user} handleDelete={handleDelete} blog={blog} />
       </div>
