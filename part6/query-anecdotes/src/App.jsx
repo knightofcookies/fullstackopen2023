@@ -3,9 +3,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { createAnecdote, getAnecdotes, vote } from './requests'
-import { useNotificationDispatch, useNotificationValue } from './components/NotificationContext'
+import NotificationContext from './components/NotificationContext'
+import { useContext } from 'react'
 
 const App = () => {
+  const [notificaion, dispatch] = useContext(NotificationContext)
+
   const queryClient = useQueryClient()
 
   const newAnecdoteMutation = useMutation({
@@ -13,15 +16,14 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     },
-    onError: (error) => {
-      useNotificationDispatch({
+    onError: () => {
+      dispatch({
         type: 'SET',
-        payload: 'nope'
+        payload: 'Error : Anecdoote must be at least 5 characters long'
       })
-      console.log(error.message)
       setTimeout(() => {
-        useNotificationDispatch({ type: 'RESET' })
-      }, 5000);
+        dispatch({ type: 'RESET' })
+      }, 5000)
     }
   })
 
@@ -30,13 +32,13 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     },
-    onError: (error) => {
-      useNotificationDispatch({
+    onError: () => {
+      dispatch({
         type: 'SET',
-        payload: error.message
+        payload: 'Error: Vote couldn\'t be processed'
       })
       setTimeout(() => {
-        useNotificationDispatch({ type: 'RESET' })
+        dispatch({ type: 'RESET' })
       }, 5000);
     }
   })

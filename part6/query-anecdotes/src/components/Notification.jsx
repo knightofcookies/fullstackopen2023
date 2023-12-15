@@ -1,4 +1,5 @@
-import { useNotificationValue } from './NotificationContext'
+import { useContext } from 'react'
+import NotificationContext from './NotificationContext'
 
 const Notification = () => {
   const style = {
@@ -7,13 +8,14 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 5 
   }
-  const content = useNotificationValue()
-  if(content == '') {
+  const [notification, dispatch] = useContext(NotificationContext)
+
+  if(notification == '') {
     return null
   }
   return (
     <div style={style}>
-      <p>{content}</p>
+      <p>{notification}</p>
     </div>
   )
 }
