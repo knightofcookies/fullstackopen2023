@@ -62,6 +62,11 @@ const App = () => {
     try {
       blogService.setToken(user.token)
       const savedBlog = await blogService.createBlog(newBlog)
+      savedBlog.user = {
+        name: user.name,
+        username: user.username,
+        id: user.id
+      }
       dispatch(appendBlog(savedBlog))
       const msg = `A new blog ${savedBlog.title} by
       ${savedBlog.author} has been added`
