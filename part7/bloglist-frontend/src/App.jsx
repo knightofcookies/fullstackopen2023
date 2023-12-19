@@ -8,23 +8,19 @@ import loginService from './services/login'
 import LoginStatus from './components/LoginStatus'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setErrorNotification } from './reducers/errorNotificationReducer'
 import { setSuccessNotification } from './reducers/successNotificationReducer'
+import { setBlogs, appendBlog, replaceBlog, deleteBlog } from './reducers/blogsReducer'
+import { setUser } from './reducers/userReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
-
-  const sortByLikes = (a, b) => b.likes - a.likes
-  if (blogs) {
-    blogs.sort(sortByLikes)
-  }
+  const user = useSelector(state => state.user)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -38,13 +34,13 @@ const App = () => {
         return
       }
 
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      blogService.setToken(user.token)
-      window.localStorage.setItem('loggedBlogListUser', JSON.stringify(user))
+      const rUser = await loginService.login({ username, password })
+      dispatch(setUser(rUser))
+      blogService.setToken(rUser.token)
+      window.localStorage.setItem('loggedBlogListUser', JSON.stringify(rUser))
       setUsername('')
       setPassword('')
-      dispatch(setSuccessNotification(`Successfully logged in as ${user.username}`, 5))
+      dispatch(setSuccessNotification(`Successfully logged in as ${rUser.username}`, 5))
     } catch (exception) {
       dispatch(setErrorNotification('Wrong credentials', 5))
     }
@@ -53,7 +49,7 @@ const App = () => {
   const handleLogout = (event) => {
     try {
       window.localStorage.removeItem('loggedBlogListUser')
-      setUser(null)
+      dispatch(setUser(null))
       blogService.setToken(null)
     } catch (exception) {
       dispatch(setErrorNotification('Sorry, we had trouble logging you out', 5))
@@ -66,7 +62,7 @@ const App = () => {
     try {
       blogService.setToken(user.token)
       const savedBlog = await blogService.createBlog(newBlog)
-      setBlogs(blogs.concat(savedBlog))
+      dispatch(appendBlog(savedBlog))
       const msg = `A new blog ${savedBlog.title} by
       ${savedBlog.author} has been added`
       dispatch(setSuccessNotification(msg, 5))
@@ -84,7 +80,7 @@ const App = () => {
     try {
       blogService.setToken(user.token)
       await blogService.updateBlog(updatedBlog)
-      setBlogs(blogs.map(b => (b.id === blog.id ? updatedBlog : b)))
+      dispatch(replaceBlog(updatedBlog))
     } catch (exception) {
       dispatch(setErrorNotification(`Error processing your like on ${blog.title}`, 5))
     }
@@ -95,7 +91,7 @@ const App = () => {
       if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
         blogService.setToken(user.token)
         await blogService.deleteBlog(blog.id)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
+        dispatch(deleteBlog(blog.id))
       }
     } catch (exception) {
       dispatch(setErrorNotification(`Error deleting ${blog.title}`, 5))
@@ -106,7 +102,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogListUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
     }
   }, [])
 
@@ -117,7 +113,7 @@ const App = () => {
     blogService.setToken(user.token)
     try {
       blogService.getAll().then(blogs =>
-        setBlogs(blogs)
+        dispatch(setBlogs(blogs))
       )
     } catch (exception) {
       console.error(exception)
@@ -145,7 +141,7 @@ const App = () => {
         <br />
       </Togglable>
       <br />
-      <Blogs user={user} blogs={blogs} handleLike={handleLike} handleDelete={handleDelete} />
+      <Blogs user={user} handleLike={handleLike} handleDelete={handleDelete} />
     </div>
   )
 }

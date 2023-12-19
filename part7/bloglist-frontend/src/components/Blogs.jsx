@@ -1,9 +1,11 @@
 import Blog from './Blog'
+import { useSelector } from 'react-redux'
 
 const Blogs = props => {
+  const blogs = useSelector(state => state.blogs)
   if (!props.user) {
     return null
-  } else if (!props.blogs) {
+  } else if (!blogs || blogs.length === 0) {
     return (
       <div>
         <p>There are no blogs to show</p>
@@ -11,10 +13,15 @@ const Blogs = props => {
       </div>
     )
   }
+
+  const sortByLikes = (a, b) => b.likes - a.likes
+  const newBlogs = blogs.map(blog => blog)
+  newBlogs.sort(sortByLikes)
+
   return (
     <div>
       <h2>List</h2>
-      {props.blogs.map(blog =>
+      {newBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} handleLike={props.handleLike} user={props.user} handleDelete={props.handleDelete} />
       )}
     </div>
